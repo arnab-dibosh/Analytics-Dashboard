@@ -1,4 +1,4 @@
-function drawRightChart(domId){
+function drawMidleChart(domId){
 
 var data=
 [
@@ -35,10 +35,10 @@ var g = svg.append("g")
         .attr("class", "y axis")
         .call(d3.axisLeft(y));
 
-    g.selectAll(".light-green")
+    g.selectAll(".light-red")
         .data(data)
       .enter().append("rect")
-        .attr("class", "light-green")
+        .attr("class", "light-red")
         .attr("x", 0)
         .attr("height", y.bandwidth())
         .attr("y", function(d) { return y(d.area); })

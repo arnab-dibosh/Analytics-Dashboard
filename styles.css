@@ -5,6 +5,26 @@ body {
 .bar {
 	fill: #6F257F;
 }
+
+.lf {
+	fill: #2FCDDC;
+}
+.sevenDay {
+	fill: #4BACC6;
+}
+.threeDay {
+	fill: #388194;
+}
+.oneDay {
+	fill: #255663;
+}
+.light-red{
+  fill: #D99694;
+}
+.light-green{
+  fill: #92D050;
+}
+
 .axis path,
 .axis line {
   fill: none;
