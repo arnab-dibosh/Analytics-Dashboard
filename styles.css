@@ -1,3 +1,22 @@
+.vline{
+  fill: red;
+}
+
+.vline2{
+  fill: darkgray;
+}
+
+.legend{
+  display: inline-block;
+    height: 20px;
+    width: 20px;
+}
+
+.legend-text{
+  padding-right: 15px;
+  padding-left: 5px;
+}
+
 body {
   margin: 15px;
   background-color: #F1F3F3    

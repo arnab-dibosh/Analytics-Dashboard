@@ -12,19 +12,76 @@
   <tr>
     <td width="50%">
       <svg id="leftChart" width="600" height="300"></svg>
+      </br>
+      <span style="padding-left: 100px">
+        <span class="legend" style=" background-color: #255663;" id="1_day"></span><span class="legend-text">1_Day</span>
+        <span class="legend" style=" background-color: #388194;" id="3_day"></span><span class="legend-text">3_Day</span>
+        <span class="legend" style=" background-color: #4BACC6;" id="7_day"></span><span class="legend-text">7_Day</span>
+        <span class="legend" style=" background-color: #2FCDDC;" id="LF"></span><span class="legend-text">LF</span>
+      </span>
     </td>
     <td width="25%">
       <svg id="midChart" width="300" height="300"></svg>
+      <div>
+        <span  style="padding-left: 100px">
+          <span class="legend" style=" background-color: #D99694;" id="1_day"></span><span class="legend-text">YOY_CAP</span>
+        </span>
+      </div>
     </td> 
     <td width="25%">
       <svg id="rightChart" width="300" height="300"></svg>
+      <div>
+        <span  style="padding-left: 100px">
+          <span class="legend" style=" background-color: #92D050;" id="1_day"></span><span class="legend-text">PACE</span>
+        </span>
+      </div>
+    </td>
+  </tr>  
+
+  <tr>
+    <td width="50%">
+      <svg id="leftTotalChart" width="600" height="100"></svg>
+    </td>
+    <td width="25%">
+      <svg id="midTotalChart" width="300" height="100"></svg>
+    </td> 
+    <td width="25%">
+      <svg id="rightTotalChart" width="300" height="100"></svg>
     </td>
   </tr>  
 </table>
 
-
 <script>
-  drawLeftChart("#leftChart");
-  drawMidleChart("#midChart");
-  drawRightChart("#rightChart");
+  
+var leftTop=
+  [
+      {"area": "market 1 ", "oneDay": 60, "threeDay": 70, "sevenDay": 90, "LF": 100 },
+      {"area": "market 2", "oneDay": 40, "threeDay": 50, "sevenDay": 60, "LF": 70 },
+      {"area": "market 3", "oneDay": 10, "threeDay": 20, "sevenDay": 30, "LF": 40 },
+  ]
+
+var rightTop=
+  [
+      {"area": "Market 1", "value": 20},
+      {"area": "Market 2", "value": 40},
+      {"area": "Market 3", "value": 600}
+  ]
+
+  var leftTotal=
+  [
+      {"area": "Grand Total", "oneDay": 40, "threeDay": 50, "sevenDay": 60, "LF": 70 }
+  ]
+
+var rightTotal=
+  [
+      {"area": "", "value": 40}
+  ]
+
+  drawLeftChart("#leftChart", leftTop);
+  drawMidleChart("#midChart", rightTop);
+  drawRightChart("#rightChart", rightTop);
+
+  drawLeftChart("#leftTotalChart", leftTotal);
+  drawMidleChart("#midTotalChart", rightTotal);
+  drawRightChart("#rightTotalChart", rightTotal);
 </script>

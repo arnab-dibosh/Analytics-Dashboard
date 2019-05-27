@@ -1,14 +1,8 @@
-function drawLeftChart(domId){
+function drawLeftChart(domId, data){
 
-var data=
-[
-    {"area": "market 1 ", "oneDay": 60, "threeDay": 70, "sevenDay": 90, "LF": 100 },
-    {"area": "market 2", "oneDay": 40, "threeDay": 50, "sevenDay": 60, "LF": 70 },
-    {"area": "market 3", "oneDay": 10, "threeDay": 20, "sevenDay": 30, "LF": 40 },
-]
 
 var leftChart = d3.select(domId);
-var margin = {top: 20, right: 20, bottom: 30, left: 80};
+var margin = {top: 20, right: 50, bottom: 30, left: 80};
 var width = +leftChart.attr("width") - margin.left - margin.right;
 var height = +leftChart.attr("height") - margin.top - margin.bottom;
   
@@ -44,7 +38,7 @@ var g = leftChart.append("g")
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html((d.area) + "<br>"+ (d.LF));
+              .html("LF" + "<br>"+ (d.LF));
         })     
     	.on("mouseout", function(d){ tooltip.style("display", "none");})        
         .attr("width", 0)
@@ -67,7 +61,7 @@ g.selectAll(".sevenDay")
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html((d.area) + "<br>"+ (d.sevenDay));
+              .html("Seven Day" + "<br>"+ (d.sevenDay));
         })     
     	.on("mouseout", function(d){ tooltip.style("display", "none");})        
         .attr("width", 0)
@@ -87,7 +81,7 @@ g.selectAll(".threeDay")
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html((d.area) + "<br>"+ (d.threeDay));
+              .html("Three Day" + "<br>"+ (d.threeDay));
         })     
     	.on("mouseout", function(d){ tooltip.style("display", "none");})        
         .attr("width", 0)
@@ -107,12 +101,30 @@ g.selectAll(".oneDay")
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html((d.area) + "<br>"+ (d.oneDay));
+              .html("One Day" + "<br>"+ (d.oneDay));
         })     
     	.on("mouseout", function(d){ tooltip.style("display", "none");})        
         .attr("width", 0)
         .transition()
         .duration(1500)
         .attr("width", function(d) { return x(0) - x(d.oneDay); });
+
+        g.selectAll(".vline")
+        .data(data)
+      .enter().append("rect")
+        .attr("class", "vline")
+        .attr("x", width+10)
+        .attr("y", function(d) { return y(d.area)-10; })  
+        .attr("height", 1.8*y.bandwidth())
+        .attr("width", 3);
+
+          g.selectAll(".vline2")
+        .data(data)
+      .enter().append("rect")
+        .attr("class", "vline2")
+        .attr("x", width+20)
+        .attr("y", function(d) { return y(d.area)-10; })  
+        .attr("height", 1.8*y.bandwidth())
+        .attr("width", 3);
       
 }

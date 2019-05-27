@@ -1,11 +1,6 @@
-function drawRightChart(domId){
+function drawRightChart(domId, data){
 
-var data=
-[
-    {"area": "Market 1", "value": 20},
-    {"area": "Market 2", "value": 40},
-    {"area": "Market 3", "value": 600}
-]
+
 
 var svg = d3.select(domId);
 var margin = {top: 20, right: 20, bottom: 30, left: 80};
@@ -49,6 +44,7 @@ var g = svg.append("g")
               .style("display", "inline-block")
               .html((d.area) + "<br>"+ (d.value));
         }) 
+        .on("mouseout", function(d){ tooltip.style("display", "none");})  
         .attr("width", 0)
         .transition()
         .duration(1500)
