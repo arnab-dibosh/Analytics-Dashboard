@@ -1,6 +1,6 @@
 function drawLeftChart(domId, data){
 
-
+$(domId).empty();
 var leftChart = d3.select(domId);
 var margin = {top: 20, right: 50, bottom: 30, left: 80};
 var width = +leftChart.attr("width") - margin.left - margin.right;
@@ -15,12 +15,12 @@ var g = leftChart.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   
   	x.domain([0, d3.max(data, function(d) { return d3.max([d["1_DAY"], d['3_DAY'], d['7_DAY'], d.LF]) ; })]);
-    y.domain(data.map(function(d) { return d.area; })).padding(0.5);
+    y.domain(data.map(function(d) { return d.label; })).padding(0.5);
 
     g.append("g")
         .attr("class", "x axis")
        	.attr("transform", "translate(0," + height + ")")
-      	.call(d3.axisBottom(x).ticks(5).tickFormat(function(d) { return parseInt(d); }).tickSizeInner([-height]));
+      	.call(d3.axisBottom(x).ticks(5).tickFormat(function(d) { return parseInt(d*100)+'%'; }).tickSizeInner([-height]));
 
     g.append("g")
         .attr("class", "y axis")
@@ -30,7 +30,7 @@ var g = leftChart.append("g")
         .data(data)
       .enter().append("rect")
         .attr("class", "lf")
-        .attr("x", function(d){return x(d.LF) })
+        .attr("x", function(d){return x(Math.abs(d.LF)) })
         .attr("height", y.bandwidth())
         .attr("y", function(d) { return y(d.label); })
         .on("mouseover", function(d){
@@ -38,20 +38,20 @@ var g = leftChart.append("g")
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html("LF" + "<br>"+ (d.LF));
+              .html("LF" + "<br>"+ parseInt(d.LF*100)+'%');
         })     
     	.on("mouseout", function(d){ tooltip.style("display", "none");})        
         .attr("width", 0)
         .transition()
         .duration(1500)
-        .attr("width", function(d) { return x(0) - x(d.LF); });
+        .attr("width", function(d) { return x(0) - x(Math.abs(d.LF)); });
 
 
 g.selectAll(".sevenDay")
         .data(data)
       .enter().append("rect")
         .attr("class", "sevenDay")
-        .attr("x", function(d){return x(d['7_DAY']) })
+        .attr("x", function(d){return x(Math.abs(d['7_DAY'])) })
         .attr("height", y.bandwidth())
         .attr("y", function(d) { return y(d.label); })
         .on("mouseover", function(d){
@@ -59,19 +59,19 @@ g.selectAll(".sevenDay")
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html("Seven Day" + "<br>"+ (d['7_DAY']));
+              .html("Seven Day" + "<br>"+ parseInt(d['7_DAY']*100)+'%');
         })     
     	.on("mouseout", function(d){ tooltip.style("display", "none");})        
         .attr("width", 0)
         .transition()
         .duration(1500)
-        .attr("width", function(d) { return x(0) - x(d['7_DAY']); });
+        .attr("width", function(d) { return x(0) - x(Math.abs(d['7_DAY'])); });
 
 g.selectAll(".threeDay")
         .data(data)
       .enter().append("rect")
         .attr("class", "threeDay")
-        .attr("x", function(d){return x(d['3_DAY']) })
+        .attr("x", function(d){return x(Math.abs(d['3_DAY'])) })
         .attr("height", y.bandwidth())
         .attr("y", function(d) { return y(d.label); })
         .on("mouseover", function(d){
@@ -79,19 +79,19 @@ g.selectAll(".threeDay")
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html("Three Day" + "<br>"+ (d['3_DAY']));
+              .html("Three Day" + "<br>"+ parseInt(d['3_DAY']*100)+'%');
         })     
     	.on("mouseout", function(d){ tooltip.style("display", "none");})        
         .attr("width", 0)
         .transition()
         .duration(1500)
-        .attr("width", function(d) { return x(0) - x(d['3_DAY']); });
+        .attr("width", function(d) { return x(0) - x(Math.abs(d['3_DAY'])); });
 
 g.selectAll(".oneDay")
         .data(data)
       .enter().append("rect")
         .attr("class", "oneDay")
-        .attr("x", function(d){return x(d['1_DAY']) })
+        .attr("x", function(d){return x(Math.abs(d['1_DAY'])) })
         .attr("height", y.bandwidth())
         .attr("y", function(d) { return y(d.label); })
         .on("mouseover", function(d){
@@ -99,20 +99,20 @@ g.selectAll(".oneDay")
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html("One Day" + "<br>"+ (d['1_DAY']));
+              .html("One Day" + "<br>"+ parseInt(d['1_DAY']*100)+'%');
         })     
     	.on("mouseout", function(d){ tooltip.style("display", "none");})        
         .attr("width", 0)
         .transition()
         .duration(1500)
-        .attr("width", function(d) { return x(0) - x(d['1_DAY']); });
+        .attr("width", function(d) { return x(0) - x(Math.abs(d['1_DAY'])); });
 
         g.selectAll(".vline")
         .data(data)
       .enter().append("rect")
         .attr("class", "vline")
         .attr("x", width+10)
-        .attr("y", function(d) { return y(d.area)-10; })  
+        .attr("y", function(d) { return y(d.label)-10; })  
         .attr("height", 1.8*y.bandwidth())
         .attr("width", 3);
 
@@ -121,7 +121,7 @@ g.selectAll(".oneDay")
       .enter().append("rect")
         .attr("class", "vline2")
         .attr("x", width+20)
-        .attr("y", function(d) { return y(d.area)-10; })  
+        .attr("y", function(d) { return y(d.label)-10; })  
         .attr("height", 1.8*y.bandwidth())
         .attr("width", 3);
       

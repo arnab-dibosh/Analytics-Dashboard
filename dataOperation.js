@@ -1,9 +1,30 @@
+function loadMarketDropDown(rawData, isdummy){
+
+    var marketWiseData;
+    if(isdummy) marketWiseData= Array.from(d3.group(rawData, d => d.label), ([key, value]) => ({key, value}));
+    else marketWiseData= Array.from(d3.group(rawData, d => d.Roundtrip_Market), ([key, value]) => ({key, value}));
+    
+        $.each( marketWiseData, function( j, marketkeyval ) {
+            var marketName= marketkeyval['key'];//Mkt_19
+            
+            $('#mktfilter').append($('<option>', {
+                value: marketName,
+                text: marketName
+            }));
+        });
+
+    
+}
+
+function filterMarket(marketData, isdummy){
+
+}
+
 function prepareMarketWiseData(rawData){
     var marketWiseChartArray=[];
 
     var regionWiseData= Array.from(d3.group(rawData, d => d.Region), ([key, value]) => ({key, value}));
-
-
+    
     $.each( regionWiseData, function( i, keyval ) {
     
         var regionArr= keyval['value'];// All data of Asia

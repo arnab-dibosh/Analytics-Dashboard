@@ -11,9 +11,18 @@
   <script src="dataOperation.js"></script>
   <script src="jquery-3.4.1.min.js"></script>
   <script src="d3-array.v2.min.js"></script>
+  <script src="dummyData.js"></script>
 </head>
 
 <body>
+  <div>
+    <input type="radio" name="view" value="date" checked>Date View
+    <input type="radio" name="view" value="market">Market View
+
+    <select id="mktfilter" style="padding-left: 20px">
+      <option value="All">All</option>
+    </select>
+  </div>
   <table style="width:100%" border="0">  
     <tr>
       <td width="50%">
@@ -61,45 +70,38 @@
 <script>
   $(document).ready(function() { 
      
-      var leftTop=
-      [
-          {"area": "market 1 ", "oneDay": 60, "threeDay": 70, "sevenDay": 90, "LF": 100 },
-          {"area": "market 2", "oneDay": 40, "threeDay": 50, "sevenDay": 60, "LF": 70 },
-          {"area": "market 3", "oneDay": 10, "threeDay": 20, "sevenDay": 30, "LF": 40 },
-      ]
+      var chartdata, isDummyData=true, isDayMode=true;
 
-      var rightTop=
-      [
-          {"area": "Market 1", "value": 20},
-          {"area": "Market 2", "value": 40},
-          {"area": "Market 3", "value": 600}
-      ]
+      $('input:radio[name="view"]').change(function(){
+          if($(this).val() == 'date') isDayMode=true;
+          else isDayMode=false;
+          renderChart();
+      });
 
-      var leftTotal=
-      [
-          {"area": "Grand Total", "oneDay": 40, "threeDay": 50, "sevenDay": 60, "LF": 70 }
-      ]
+      function renderChart(){
+          if(isDummyData){
+            chartdata= isDayMode? dayWiseDummyData: marketWiseDummyData;
+          }
+          else{
+            if(isDayMode) chartdata=prepareDayWiseData(rawData);
+              else chartdata=prepareMarketWiseData(rawData);
+          }     
+          
+          console.log(JSON.stringify(chartdata));
+          // console.log(JSON.stringify(chartdata));
 
-      var rightTotal=
-      [
-          {"area": "", "value": 40}
-      ]
+          drawLeftChart("#leftChart", chartdata);
+        //   drawMidleChart("#midChart", chartdata);
+        //   drawRightChart("#rightChart", chartdata);
 
-      var chartdata;
-      chartdata=prepareMarketWiseData(rawData);
-     // console.log('Market Data: '+JSON.stringify(chartdata));
-      chartdata=prepareDayWiseData(allData);
-      console.log('Market Data: '+JSON.stringify(chartdata));
-
-
-     // drawLeftChart("#leftChart", chartdata);
-      // drawMidleChart("#midChart", chartdata);
-      // drawRightChart("#rightChart", chartdata);
-
-      // drawLeftChart("#leftTotalChart", leftTotal);
-      // drawMidleChart("#midTotalChart", rightTotal);
-      // drawRightChart("#rightTotalChart", rightTotal);
-
+          // drawLeftChart("#leftTotalChart", leftTotal);
+          // drawMidleChart("#midTotalChart", rightTotal);
+          // drawRightChart("#rightTotalChart", rightTotal);
+      }
+      
+      var dataForDropDown=isDummyData? marketWiseDummyData: allData;
+      loadMarketDropDown(dataForDropDown, isDummyData);
+      renderChart();
   });
 
 </script>
