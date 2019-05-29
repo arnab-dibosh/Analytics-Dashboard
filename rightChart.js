@@ -1,8 +1,9 @@
-function drawRightChart(domId, data){
-
+function drawRightChart(domId, data, chartHeight){
+$(domId).empty();
 
 
 var svg = d3.select(domId);
+svg.attr("height", chartHeight);
 var margin = {top: 20, right: 20, bottom: 30, left: 80};
 var width = +svg.attr("width") - margin.left - margin.right;
 var height = +svg.attr("height") - margin.top - margin.bottom;
@@ -18,36 +19,37 @@ var g = svg.append("g")
   
   //	data.sort(function(a, b) { return a.value - b.value; });
   
-  	x.domain([0, d3.max(data, function(d) { return d.value; })]);
-    y.domain(data.map(function(d) { return d.area; })).padding(0.5);
+  	x.domain([0, d3.max(data, function(d) { return Math.abs(d['7_DAY_PACE']); })]);
+    y.domain(data.map(function(d) { return d.label; })).padding(0.5);
 
     g.append("g")
         .attr("class", "x axis")
        	.attr("transform", "translate(0," + height + ")")
-      	.call(d3.axisBottom(x).ticks(5).tickFormat(function(d) { return parseInt(d); }).tickSizeInner([-height]));
+      	.call(d3.axisBottom(x).ticks(5).tickFormat(function(d) { return parseInt(d*100)+'%'; }).tickSizeInner([-height]));
 
     g.append("g")
         .attr("class", "y axis")
         .call(d3.axisLeft(y));
 
-    g.selectAll(".light-green")
+    g.selectAll(".right")
         .data(data)
       .enter().append("rect")
-        .attr("class", "light-green")
+        .attr("class", "right")
+        .style("fill", function(d) { return d.YOY_CAP>0? '#D99694': '#92D050';})
         .attr("x", 0)
         .attr("height", y.bandwidth())
-        .attr("y", function(d) { return y(d.area); })
+        .attr("y", function(d) { return y(d.label); })
         .on("mouseover", function(d){
             tooltip
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html((d.area) + "<br>"+ (d.value));
+              .html((d.label) + "<br>"+ parseInt(d['7_DAY_PACE']*100)+'%');
         }) 
         .on("mouseout", function(d){ tooltip.style("display", "none");})  
         .attr("width", 0)
         .transition()
         .duration(1500)
-        .attr("width", function(d) { return x(d.value); });       
+        .attr("width", function(d) { return x(Math.abs(d['7_DAY_PACE'])); });       
 
 }

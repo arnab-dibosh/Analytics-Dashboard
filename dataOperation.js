@@ -1,10 +1,23 @@
-function loadMarketDropDown(rawData, isdummy){
+function loadMarketDropDown(rawData){
 
-    var marketWiseData;
-    if(isdummy) marketWiseData= Array.from(d3.group(rawData, d => d.label), ([key, value]) => ({key, value}));
-    else marketWiseData= Array.from(d3.group(rawData, d => d.Roundtrip_Market), ([key, value]) => ({key, value}));
+    var marketWiseDataa;
+    if(window.isDummyData){
+        rawData=window.marketWiseDummyData;
+        marketWiseDataa= Array.from(d3.group(rawData, d => d.label), ([key, value]) => ({key, value}));
+    } 
+    else{
+        marketWiseDataa= Array.from(d3.group(rawData, d => d.Roundtrip_Market), ([key, value]) => ({key, value}));
+    } 
     
-        $.each( marketWiseData, function( j, marketkeyval ) {
+    //console.log(JSON.stringify(marketWiseDataa));
+    $('#mktfilter')
+    .empty()
+    .append($('<option>', {
+                value: 'All',
+                text: 'All'
+            }));
+
+        $.each( marketWiseDataa, function( j, marketkeyval ) {
             var marketName= marketkeyval['key'];//Mkt_19
             
             $('#mktfilter').append($('<option>', {
@@ -16,11 +29,37 @@ function loadMarketDropDown(rawData, isdummy){
     
 }
 
-function filterMarket(marketData, isdummy){
+function filterMonth(monthData){
+    var result;    
+    if(window.selectedMonth!='All'){
+           
+            result = monthData.filter(function(obj) {
+                return obj.Departure_Month.slice(-3) === window.selectedMonth;
+            });
+        monthData= result;
+    }    
+    return monthData;
+}
 
+function filterMarket(marketData){
+    var result;
+    window.selectedMarket=$('#mktfilter').children("option:selected").val()
+    if(window.selectedMarket!='All'){
+           
+            result = marketData.filter(function(obj) {
+                return obj.label === window.selectedMarket;
+            });
+        marketData= result;
+    }    
+    return marketData;
 }
 
 function prepareMarketWiseData(rawData){
+    if(window.isDummyData){
+        rawData=window.marketWiseDummyData;
+        return window.marketWiseDummyData;
+    } 
+    
     var marketWiseChartArray=[];
 
     var regionWiseData= Array.from(d3.group(rawData, d => d.Region), ([key, value]) => ({key, value}));
@@ -37,7 +76,8 @@ function prepareMarketWiseData(rawData){
             var marketArr= marketkeyval['value'];// All data of Mkt_19
             var marketName= marketkeyval['key'];//Mkt_19
             
-            //Remove row from market arr when filter applied
+            calculateTotalMonth(marketArr);
+
             var rpmsum= d3.sum(marketArr, function(d) { return d.RPM; });
             var asmsum= d3.sum(marketArr, function(d) { return d.ASM; });
 
@@ -49,7 +89,7 @@ function prepareMarketWiseData(rawData){
             var lyFlownAsmsum= d3.sum(marketArr, function(d) { return d.LY_FLOWN_ASM; });
             var sevendayLYmilesum= d3.sum(marketArr, function(d) { return d["7_DAY_LY_MILES"]; });
             var LYasmsum= d3.sum(marketArr, function(d) { return d.LY_ASM; });
-            var YOYasmsum= d3.sum(marketArr, function(d) { return d.YOY_ASM; });
+            var YOYasmsum= d3.sum(marketArr, function(d) { return d.YoY_ASM; });
             var LYrpmsum= d3.sum(marketArr, function(d) { return d.LY_RPM; });
 
             var lf=rpmsum/asmsum;
@@ -77,12 +117,24 @@ function prepareMarketWiseData(rawData){
             
         });
     });
-       
+       updataTop();
     return marketWiseChartArray;
 }
 
+function calculateTotalMonth(monthAarr){
+    window.trpmsum+= d3.sum(monthAarr, function(d) { return d.RPM; });
+    window.tasmsum+= d3.sum(monthAarr, function(d) { return d.ASM; });
+    window.tlyFlownRpmsum+= d3.sum(monthAarr, function(d) { return d.LY_FLOWN_RPM; });
+    window.tlyFlownAsmsum+= d3.sum(monthAarr, function(d) { return d.LY_FLOWN_ASM; });
+    window.tYOYasmsum+= d3.sum(monthAarr, function(d) { return d.YoY_ASM; });
+    window.tLYasmsum+= d3.sum(monthAarr, function(d) { return d.LY_ASM; });
+     window.tLYasmsum+= d3.sum(monthAarr, function(d) { return d.LY_ASM; });
+     window.tLYrpmsum+= d3.sum(monthAarr, function(d) { return d.LY_RPM; });
+
+}
 
 function prepareDayWiseData(rawData){
+    if(window.isDummyData) return window.dayWiseDummyData;
     var dayWiseChartArray=[];
 
         var dayWiseData= Array.from(d3.group(rawData, d => d.Departure_Date), ([key, value]) => ({key, value}));
@@ -93,6 +145,8 @@ function prepareDayWiseData(rawData){
             var dayName= daykeyval['key'];//Mkt_19
             
             //Remove row from market arr when filter applied
+            dayArr=filterMonth(dayArr);
+            calculateTotalMonth(dayArr);
             var rpmsum= d3.sum(dayArr, function(d) { return d.RPM; });
             var asmsum= d3.sum(dayArr, function(d) { return d.ASM; });
 
@@ -104,7 +158,7 @@ function prepareDayWiseData(rawData){
             var lyFlownAsmsum= d3.sum(dayArr, function(d) { return d.LY_FLOWN_ASM; });
             var sevendayLYmilesum= d3.sum(dayArr, function(d) { return d["7_DAY_LY_MILES"]; });
             var LYasmsum= d3.sum(dayArr, function(d) { return d.LY_ASM; });
-            var YOYasmsum= d3.sum(dayArr, function(d) { return d.YOY_ASM; });
+            var YOYasmsum= d3.sum(dayArr, function(d) { return d.YoY_ASM; });
             var LYrpmsum= d3.sum(dayArr, function(d) { return d.LY_RPM; });
 
             var lf=rpmsum/asmsum;
@@ -130,39 +184,23 @@ function prepareDayWiseData(rawData){
             dayWiseChartArray.push(chartBar);
         });
        
+       updataTop();
     return dayWiseChartArray;
 }
 
+function updataTop(){
+     window.grandlf=window.trpmsum/window.tasmsum;
+        window.grandlyf=window.tlyFlownRpmsum/window.tlyFlownAsmsum;
+        window.grandyoy=window.tYOYasmsum/window.tLYasmsum;
+     window.tlylf=window.tLYasmsum/window.tLYrpmsum;
+    window.grandprolf=window.lyFlownlf-window.tlylf+window.grandlf;
 
-//  "Departure_Date": "5/29/2019",
-//    "LY_Departure_Date": "5/30/2018",
-//    "Departure_Day_of_Week": "Wednesday",
-//    "LY_Departure_Day_of_Week": "Wednesday",
-//    "Departure_Month": "19-May",
-//    "LY_Departure_Month": "18-May",
-//    "Region": "Asia",
-//    "LY_Region": "Asia",
-//    "Roundtrip_Market": "MKT_19",
-//    "LY_Roundtrip_Market": "MKT_19",
-//    "RPM": 502213,
-//    "LY_RPM": 625708,
-//    "YoY_RPM": -123495,
-//    "ASM": 1811260,
-//    "LY_ASM": 987960,
-//    "YoY_ASM": 823300,
-//    "Mileage": 8233,
-//    "LY_Mileage": 8233,
-//    "YoY_Mileage": 0,
-//    "Total_Bookings": 61,
-//    "LY_Total_Bookings": 76,
-//    "YoY_Total_Bookings": -15,
-//    "1_day_PU": 0,
-//    "3_day_PU": 1,
-//    "7_day_PU": 0,
-//    "7_day_LY": 1,
-//    "LY_FLOWN_RPM": 675106,
-//    "LY_FLOWN_ASM": 987960,
-//    "7_DAY_MILES": 0,
-//    "7_DAY_LY_MILES": 8233,
-//    "1_DAY_MILES": 0,
-//    "3_DAY_MILES": 8233
+    $('#toplf').text(parseInt(window.grandlf*100)+'%');
+    if(!isNaN(window.grandprolf)) $('#toppro').text(parseInt(window.grandprolf*100)+'%');
+    else $('#toppro').text('75%');
+
+    if(!isNaN(window.grandlyf))$('#toplyf').text(parseInt(window.grandlyf*100)+'%');
+    else $('#toplyf').text(parseInt('100%'));
+
+    $('#topyoy').text(parseInt(window.grandyoy*100)+'%');
+}

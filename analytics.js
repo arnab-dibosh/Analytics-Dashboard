@@ -1,4 +1,4 @@
-var allData=
+ window.allData=
 [
  {
    "Departure_Date": "5/29/2019",

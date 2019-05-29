@@ -1,7 +1,9 @@
-function drawLeftChart(domId, data){
+function drawLeftChart(domId, data, chartHeight){
 
 $(domId).empty();
+
 var leftChart = d3.select(domId);
+leftChart.attr("height", chartHeight);
 var margin = {top: 20, right: 50, bottom: 30, left: 80};
 var width = +leftChart.attr("width") - margin.left - margin.right;
 var height = +leftChart.attr("height") - margin.top - margin.bottom;
@@ -14,7 +16,7 @@ var y = d3.scaleBand().range([height, 0]);
 var g = leftChart.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   
-  	x.domain([0, d3.max(data, function(d) { return d3.max([d["1_DAY"], d['3_DAY'], d['7_DAY'], d.LF]) ; })]);
+  	x.domain([0, d3.max(data, function(d) { return d3.max([Math.abs(d["1_DAY"]), Math.abs(d['3_DAY']), Math.abs(d['7_DAY']), Math.abs(d.LF)]) ; })]);
     y.domain(data.map(function(d) { return d.label; })).padding(0.5);
 
     g.append("g")

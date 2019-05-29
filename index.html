@@ -18,12 +18,46 @@
   <div>
     <input type="radio" name="view" value="date" checked>Date View
     <input type="radio" name="view" value="market">Market View
-
-    <select id="mktfilter" style="padding-left: 20px">
-      <option value="All">All</option>
+    <label style="padding-left: 62px;">Select Market</label>
+    <select id="mktfilter" >
+      <!--<option selected  value="All">All</option>-->
     </select>
+    
   </div>
-  <table style="width:100%" border="0">  
+  <div>
+    </br>
+    <input type="radio" name="datasource" value="actual" checked>Actual Data</input>
+    <input type="radio" name="datasource" value="dummy" >Dummy Data</input>
+    
+    <label  style="padding-left: 50px;">Select Month</label>
+    <select id="monthfilter" style="padding-left: 20px">
+      <option selected  value="All">All</option>
+       <option value="Jan">Jan</option>
+        <option value="Feb">Feb</option>
+        <option value="Mar">Mar</option>
+        <option value="Apr">Apr</option>
+        <option value="May">May</option>
+        <option value="Jun">Jun</option>
+        <option value="Jul">Jul</option>
+        <option value="Aug">Aug</option>
+        <option value="Sep">Sep</option>
+        <option value="Oct">Oct</option>
+        <option value="Nov">Nov</option>
+        <option value="Dec">Dec</option>
+    </select>
+    
+  </div>
+  <table style="width:100%" border="0"> 
+   </br>
+   <div>
+     <span style="padding-left: 270px;">
+        <span class="topbox" style=" background-color: #4472C4;" id="toplf">32%</span>
+        <span class="topbox" style=" background-color: #ED7D31;" id="toppro">44%</span>
+        <span class="topbox" style=" background-color: #FFC000;" id="toplyf">56%</span>
+        <span class="topbox" style=" background-color: #70AD47;" id="topyoy">89%</span>
+      </span>
+   </div>
+  </br>
     <tr>
       <td width="50%">
         <svg id="leftChart" width="600" height="300"></svg>
@@ -36,7 +70,7 @@
         </span>
       </td>
       <td width="25%">
-        <svg id="midChart" width="300" height="300"></svg>
+        <svg id="midChart" width="300" class="svgChart"></svg>
         <div>
           <span  style="padding-left: 100px">
             <span class="legend" style=" background-color: #D99694;" id="1_day"></span><span class="legend-text">YOY_CAP</span>
@@ -44,7 +78,7 @@
         </div>
       </td> 
       <td width="25%">
-        <svg id="rightChart" width="300" height="300"></svg>
+        <svg id="rightChart" width="300"></svg>
         <div>
           <span  style="padding-left: 100px">
             <span class="legend" style=" background-color: #92D050;" id="1_day"></span><span class="legend-text">PACE</span>
@@ -53,24 +87,44 @@
       </td>
     </tr>  
 
-    <tr>
-      <td width="50%">
-        <svg id="leftTotalChart" width="600" height="100"></svg>
-      </td>
-      <td width="25%">
-        <svg id="midTotalChart" width="300" height="100"></svg>
-      </td> 
-      <td width="25%">
-        <svg id="rightTotalChart" width="300" height="100"></svg>
-      </td>
-    </tr>  
+   
   </table>
 </body>
 
 <script>
   $(document).ready(function() { 
-     
-      var chartdata, isDummyData=true, isDayMode=true;
+     window.isDummyData=false;
+     window.rawdata=window.allData;
+     window.selectedMonth='All';
+    
+     window.trpmsum=1;
+    window.tasmsum=1;
+    window.tlyFlownRpmsum=1;
+    window.tlyFlownAsmsum=1;
+    window.tYOYasmsum=1;
+    window.tLYasmsum=1;
+     window.tLYasmsum=1;
+     window.tLYrpmsum=1;
+
+    window.grandlf=0;
+    window.grandprolf=0;
+    window.grandlyf=0;
+    window.grandyoy=0;
+
+      var chartdata, isDayMode=true;
+
+      $('input:radio[name="datasource"]').change(function(){
+          if($(this).val() == 'dummy'){
+            window.isDummyData=true;
+              window.rawdata= isDayMode? window.dayWiseDummyData: window.marketWiseDummyData;
+          }
+          else{
+            window.isDummyData=false;
+            window.rawdata=window.allData;
+          } 
+          loadMarketDropDown(window.rawdata);
+          renderChart();
+      });
 
       $('input:radio[name="view"]').change(function(){
           if($(this).val() == 'date') isDayMode=true;
@@ -78,29 +132,41 @@
           renderChart();
       });
 
+      $("#mktfilter").change(function() {
+        var selectedval = $(this).children("option:selected").val();
+        window.selectedMarket=selectedval;
+        if(!isDayMode) renderChart();
+      });
+
+      $("#monthfilter").change(function() {
+        var selectedval = $(this).children("option:selected").val();
+        window.selectedMonth=selectedval;
+        if(isDayMode) renderChart();
+      });
+
       function renderChart(){
-          if(isDummyData){
-            chartdata= isDayMode? dayWiseDummyData: marketWiseDummyData;
-          }
-          else{
-            if(isDayMode) chartdata=prepareDayWiseData(rawData);
-              else chartdata=prepareMarketWiseData(rawData);
-          }     
           
-          console.log(JSON.stringify(chartdata));
+            if(isDayMode) chartdata=prepareDayWiseData(window.rawdata);
+              else chartdata=prepareMarketWiseData(window.rawdata);
+
+          if(!isDayMode)chartdata= filterMarket(chartdata);
+          //console.log(JSON.stringify(chartdata));
           // console.log(JSON.stringify(chartdata));
+          var factor;
+          factor=chartdata.length>4? 40: 90; 
+          var chartHeight=chartdata.length*factor;
 
-          drawLeftChart("#leftChart", chartdata);
-        //   drawMidleChart("#midChart", chartdata);
-        //   drawRightChart("#rightChart", chartdata);
+         chartdata=chartdata.sort(function(a, b){
+            return a["label"]<b["label"];
+        });
 
-          // drawLeftChart("#leftTotalChart", leftTotal);
-          // drawMidleChart("#midTotalChart", rightTotal);
-          // drawRightChart("#rightTotalChart", rightTotal);
+          drawLeftChart("#leftChart", chartdata, chartHeight);
+          drawMidleChart("#midChart", chartdata, chartHeight);
+          drawRightChart("#rightChart", chartdata, chartHeight);
+
       }
       
-      var dataForDropDown=isDummyData? marketWiseDummyData: allData;
-      loadMarketDropDown(dataForDropDown, isDummyData);
+      loadMarketDropDown(window.rawdata);
       renderChart();
   });
 

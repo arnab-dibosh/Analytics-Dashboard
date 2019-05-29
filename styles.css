@@ -1,9 +1,21 @@
+.svgChart{
+  min-width:300px;
+}
 .vline{
   fill: red;
 }
 
 .vline2{
   fill: darkgray;
+}
+.topbox{
+    display: inline-block;
+    height: 40px;
+    width: 150px;
+    margin-left: 20px;
+    text-align: center;
+    font-size: 25px;
+    color: white;
 }
 
 .legend{
