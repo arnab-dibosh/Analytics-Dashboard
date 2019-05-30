@@ -119,28 +119,36 @@ g.selectAll(".oneDay")
         .duration(1500)
         .attr("width", function(d) { return x(0) - x(Math.abs(d['1_DAY'])); });
 
-      //   g.selectAll(".vline")
-      //   .data(data)
-      // .enter().append("rect")
-      //   .attr("class", "vline")
-      //   .style("fill", function(d) { return d.PROJ_LF < d.LY_FLOWN ? 'red': 'green';})
-      //   .attr("x", width+10)
-      //   .attr("y", function(d) { return y(d.label)-10; })  
-      //   .attr("height", 1.8*y.bandwidth())
-      //   .attr("width", 5)
-      //   .append("title")
-      //   .text(function(d) { return "Proj LF: "+ parseInt(d['PROJ_LF']*100)+'%' ; });
+        g.selectAll(".vline")
+        .data(data)
+      .enter().append("rect")
+        .attr("class", "vline")
+        .style("fill", function(d) { return d.PROJ_LF < d.LY_FLOWN ? 'red': 'green';})
+        .attr("x", width+10)
+        .attr("y", function(d) { return y(d.label)-10; })  
+        .attr("height", 1.8*y.bandwidth())
+        .attr("width", 5)
+        .append("title")
+        .text(function(d) { return "Proj LF: "+ parseInt(d['PROJ_LF']*100)+'%' ; });
      
-      //     g.selectAll(".vline2")
-      //   .data(data)
-      // .enter().append("rect")
-      //   .attr("class", "vline2")
-      //   .attr("x", width+20)
-      //   .attr("y", function(d) { return y(d.label)-10; })  
-      //   .attr("height", 1.8*y.bandwidth())
-      //   .attr("width", 5)
-      //   .append("title")
-      //     .text(function(d) { return "LY Flown: "+ parseInt(d['LY_FLOWN']*100)+'%' ; });
+          g.selectAll(".vline2")
+        .data(data)
+      .enter().append("rect")
+        .attr("class", "vline2")
+        .attr("x", width+20)
+        .attr("y", function(d) { return y(d.label)-10; })  
+        .attr("height", 1.8*y.bandwidth())
+        .attr("width", 5)
+        .append("title")
+          .text(function(d) { return "LY Flown: "+ parseInt(d['LY_FLOWN']*100)+'%' ; });
+      
+        g.selectAll(".region")
+        .data(data)
+      .enter().append("text")
+        .attr("class", "region")
+        .attr("x", width+40)
+        .attr("y", function(d) { return y(d.label); })
+          .text(function(d) { return 'asia' ; });
       
       
 }
