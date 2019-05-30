@@ -166,7 +166,11 @@
           factor=chartdata.length>4? 40: 90; 
           var chartHeight=chartdata.length*factor;
 
-
+          if(isDayMode){
+            $.each( chartdata, function( j, bar ){
+                bar.label= new Date(bar.label).toDateString("yyyy-dd-MM");
+            })
+          }
           
           //slice(-3)
           drawLeftChart("#leftChart", chartdata, chartHeight);
