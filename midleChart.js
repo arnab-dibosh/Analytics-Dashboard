@@ -5,7 +5,7 @@ var svg = d3.select(domId);
 
 svg.attr("height", chartHeight);
 
-var margin = {top: 20, right: 20, bottom: 30, left: 80};
+var margin = {top: 20, right: 20, bottom: 30, left: 120};
 var width = +svg.attr("width") - margin.left - margin.right;
 var height = +svg.attr("height") - margin.top - margin.bottom;
   
@@ -21,7 +21,7 @@ var y = d3.scaleBand().range([0, height]);
             return adate-bdate;
      }
      else{
-        return b.label.slice(-2)-a.label.slice(-2);
+       // return b.label.slice(-2)-a.label.slice(-2);
       }
     });
 
@@ -29,7 +29,7 @@ var g = svg.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   
   	x.domain([0, d3.max(data, function(d) { return Math.abs(d.YOY_CAP); })]);
-    y.domain(data.map(function(d) { return d.label; })).padding(0.5);
+    y.domain(data.map(function(d) {   return d.label;})).padding(0.5);
 
     g.append("g")
         .attr("class", "x axis")

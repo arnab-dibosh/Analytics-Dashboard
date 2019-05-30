@@ -4,7 +4,7 @@ $(domId).empty();
 
 var svg = d3.select(domId);
 svg.attr("height", chartHeight);
-var margin = {top: 20, right: 20, bottom: 30, left: 80};
+var margin = {top: 20, right: 20, bottom: 30, left: 120};
 var width = +svg.attr("width") - margin.left - margin.right;
 var height = +svg.attr("height") - margin.top - margin.bottom;
   
@@ -20,7 +20,7 @@ data.sort(function(a, b) {
             return adate-bdate;
      }
      else{
-        return b.label.slice(-2)-a.label.slice(-2);
+      //  return b.label.slice(-2)-a.label.slice(-2);
       }
     });
     
@@ -31,8 +31,8 @@ var g = svg.append("g")
   //	data.sort(function(a, b) { return a.value - b.value; });
   
   	x.domain([0, d3.max(data, function(d) { return Math.abs(d['7_DAY_PACE']); })]);
-    y.domain(data.map(function(d) { return d.label; })).padding(0.5);
-
+       y.domain(data.map(function(d) {   return d.label;})).padding(0.5);
+       
     g.append("g")
         .attr("class", "x axis")
        	.attr("transform", "translate(0," + height + ")")

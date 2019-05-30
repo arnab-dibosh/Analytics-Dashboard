@@ -18,34 +18,36 @@
   <div>
     <input type="radio" name="view" value="date" checked>Date View
     <input type="radio" name="view" value="market">Market View
-    <label style="padding-left: 62px;">Select Market</label>
-    <select id="mktfilter" >
-      <!--<option selected  value="All">All</option>-->
-    </select>
-    
+    <span id="spnFilterMar" style="display: none">
+      <label style="padding-left: 62px;">Select Market</label>
+      <select id="mktfilter" >
+        <!--<option selected  value="All">All</option>-->
+      </select>
+    </span>
   </div>
   <div>
     </br>
     <input type="radio" name="datasource" value="actual" checked>Actual Data</input>
     <input type="radio" name="datasource" value="dummy" >Dummy Data</input>
-    
-    <label  style="padding-left: 50px;">Select Month</label>
-    <select id="monthfilter" style="padding-left: 20px">
-      <option selected  value="All">All</option>
-       <option value="Jan">Jan</option>
-        <option value="Feb">Feb</option>
-        <option value="Mar">Mar</option>
-        <option value="Apr">Apr</option>
-        <option value="May">May</option>
-        <option value="Jun">Jun</option>
-        <option value="Jul">Jul</option>
-        <option value="Aug">Aug</option>
-        <option value="Sep">Sep</option>
-        <option value="Oct">Oct</option>
-        <option value="Nov">Nov</option>
-        <option value="Dec">Dec</option>
-    </select>
-    <label style="color: red;">* Select actual data from radio button to use Month filter</label>
+    <span id="spnFilterMon" style="display: initial">
+      <label  style="padding-left: 50px;">Select Month</label>
+      <select id="monthfilter" style="padding-left: 20px">
+        <option selected  value="All">All</option>
+        <option value="Jan">Jan</option>
+          <option value="Feb">Feb</option>
+          <option value="Mar">Mar</option>
+          <option value="Apr">Apr</option>
+          <option value="May">May</option>
+          <option value="Jun">Jun</option>
+          <option value="Jul">Jul</option>
+          <option value="Aug">Aug</option>
+          <option value="Sep">Sep</option>
+          <option value="Oct">Oct</option>
+          <option value="Nov">Nov</option>
+          <option value="Dec">Dec</option>
+      </select>
+      <label style="color: red;">* Select actual data from radio button to use Month filter</label>
+    </span>
   </div>
   <table style="width:100%" border="0"> 
    </br>
@@ -127,8 +129,16 @@
       });
 
       $('input:radio[name="view"]').change(function(){
-          if($(this).val() == 'date') isDayMode=true;
-          else isDayMode=false;
+          if($(this).val() == 'date'){
+            isDayMode=true;
+            $("#spnFilterMar").css("display", "none");
+            $("#spnFilterMon").css("display", "initial");
+          } 
+          else{
+            isDayMode=false;
+            $("#spnFilterMar").css("display", "initial");
+            $("#spnFilterMon").css("display", "none");
+          } 
           renderChart();
       });
 
@@ -151,7 +161,7 @@
 
           if(!isDayMode)chartdata= filterMarket(chartdata);
           //console.log(JSON.stringify(chartdata));
-          // console.log(JSON.stringify(chartdata));
+           //console.log(JSON.stringify(chartdata));
           var factor;
           factor=chartdata.length>4? 40: 90; 
           var chartHeight=chartdata.length*factor;
