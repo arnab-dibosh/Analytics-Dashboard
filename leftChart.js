@@ -4,7 +4,7 @@ $(domId).empty();
 
 var leftChart = d3.select(domId);
 leftChart.attr("height", chartHeight);
-var margin = {top: 20, right: 120, bottom: 30, left: 120};
+var margin = {top: 20, right: 130, bottom: 30, left: 120};
 var width = +leftChart.attr("width") - margin.left - margin.right;
 var height = +leftChart.attr("height") - margin.top - margin.bottom;
   
