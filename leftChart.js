@@ -4,7 +4,7 @@ $(domId).empty();
 
 var leftChart = d3.select(domId);
 leftChart.attr("height", chartHeight);
-var margin = {top: 20, right: 50, bottom: 30, left: 120};
+var margin = {top: 20, right: 120, bottom: 30, left: 120};
 var width = +leftChart.attr("width") - margin.left - margin.right;
 var height = +leftChart.attr("height") - margin.top - margin.bottom;
   
@@ -146,9 +146,9 @@ g.selectAll(".oneDay")
         .data(data)
       .enter().append("text")
         .attr("class", "region")
-        .attr("x", width+40)
-        .attr("y", function(d) { return y(d.label); })
-          .text(function(d) { return 'asia' ; });
+        .attr("x", width+70)
+        .attr("y", function(d) { return y(d.label)+10; })
+          .text(function(d) { return window.isDayMode? "": d.region ; });
       
       
 }
