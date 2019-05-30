@@ -13,6 +13,17 @@ var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 var x = d3.scaleLinear().range([0, width]);
 var y = d3.scaleBand().range([0, height]);
 
+data.sort(function(a, b) {
+     if(window.isDayMode){
+            adate=Date.parse(a.label)
+            bdate=Date.parse(b.label)
+            return adate-bdate;
+     }
+     else{
+        return b.label.slice(-2)-a.label.slice(-2);
+      }
+    });
+    
 var g = svg.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   

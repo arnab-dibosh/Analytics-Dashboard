@@ -45,7 +45,7 @@
         <option value="Nov">Nov</option>
         <option value="Dec">Dec</option>
     </select>
-    
+    <label style="color: red;">* Select actual data from radio button to use Month filter</label>
   </div>
   <table style="width:100%" border="0"> 
    </br>
@@ -110,8 +110,8 @@
     window.grandprolf=0;
     window.grandlyf=0;
     window.grandyoy=0;
-
-      var chartdata, isDayMode=true;
+    window.isDayMode=true;
+      var chartdata;
 
       $('input:radio[name="datasource"]').change(function(){
           if($(this).val() == 'dummy'){
@@ -156,10 +156,9 @@
           factor=chartdata.length>4? 40: 90; 
           var chartHeight=chartdata.length*factor;
 
-         chartdata=chartdata.sort(function(a, b){
-            return a["label"]<b["label"];
-        });
 
+          
+          //slice(-3)
           drawLeftChart("#leftChart", chartdata, chartHeight);
           drawMidleChart("#midChart", chartdata, chartHeight);
           drawRightChart("#rightChart", chartdata, chartHeight);

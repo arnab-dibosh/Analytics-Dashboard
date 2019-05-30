@@ -13,6 +13,15 @@ var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 var x = d3.scaleLinear().range([width, 0]);
 var y = d3.scaleBand().range([height, 0]);
 
+    data.sort(function(a, b) {
+      if(window.isDayMode){
+              return Date.parse(b.label)-Date.parse(a.label);
+      }
+      else{
+        //return b.label.slice(-2)-a.label.slice(-2);
+      }
+    });
+
 var g = leftChart.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   
