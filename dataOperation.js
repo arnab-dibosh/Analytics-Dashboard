@@ -1,15 +1,23 @@
+function groupby(arr, prop){
+    var result = arr.reduce(function (r, a) {
+        r[a[prop]] = r[a[prop]] || [];
+        r[a[prop]].push(a);
+        return r;
+    }, Object.create(null));
+    
+    return result; 
+}
+
 function loadMarketDropDown(rawData){
 
-    var marketWiseDataa;
+    var marketWiseDataa, prop;
     if(window.isDummyData){
         rawData=window.marketWiseDummyData;
-        marketWiseDataa= Array.from(d3.group(rawData, d => d.label), ([key, value]) => ({key, value}));
+       prop='label';
     } 
-    else{
-        marketWiseDataa= Array.from(d3.group(rawData, d => d.Roundtrip_Market), ([key, value]) => ({key, value}));
-    } 
-    
-    //console.log(JSON.stringify(marketWiseDataa));
+    else prop='Roundtrip_Market';
+    marketWiseDataa=groupby(rawData, prop);
+
     $('#mktfilter')
     .empty()
     .append($('<option>', {
@@ -17,16 +25,14 @@ function loadMarketDropDown(rawData){
                 text: 'All'
             }));
 
-        $.each( marketWiseDataa, function( j, marketkeyval ) {
-            var marketName= marketkeyval['key'];//Mkt_19
-            
-            $('#mktfilter').append($('<option>', {
-                value: marketName,
-                text: marketName
-            }));
-        });
-
-    
+    for ( var property in marketWiseDataa ) {
+        var marketName= property;
+        
+        $('#mktfilter').append($('<option>', {
+            value: marketName,
+            text: marketName
+        }));
+    };
 }
 
 function filterMonth(monthData){
@@ -61,20 +67,18 @@ function prepareMarketWiseData(rawData){
     } 
     
     var marketWiseChartArray=[];
-
-    var regionWiseData= Array.from(d3.group(rawData, d => d.Region), ([key, value]) => ({key, value}));
+    var regionWiseData= groupby(rawData, 'Region');
     
-    $.each( regionWiseData, function( i, keyval ) {
+    for (var reg in regionWiseData) {
     
-        var regionArr= keyval['value'];// All data of Asia
-        var regionName= keyval['key'];//Asia
-
-        var marketWiseData= Array.from(d3.group(regionArr, d => d.Roundtrip_Market), ([key, value]) => ({key, value}));
+        var regionArr= regionWiseData[reg];// All data of Asia
+        var regionName= reg;//Asia
+        var marketWiseData= groupby(regionArr, 'Roundtrip_Market');
         
-        $.each( marketWiseData, function( j, marketkeyval ) {
+        for (var mkt in marketWiseData) {
             var chartBar={};
-            var marketArr= marketkeyval['value'];// All data of Mkt_19
-            var marketName= marketkeyval['key'];//Mkt_19
+            var marketArr= marketWiseData[mkt];// All data of Mkt_19
+            var marketName= mkt;//Mkt_19
             
             calculateTotalMonth(marketArr);
 
@@ -115,9 +119,9 @@ function prepareMarketWiseData(rawData){
             
             marketWiseChartArray.push(chartBar);
             
-        });
-    });
-       updataTop();
+        };
+    };
+    updataTop();
     return marketWiseChartArray;
 }
 
@@ -137,12 +141,12 @@ function prepareDayWiseData(rawData){
     if(window.isDummyData) return window.dayWiseDummyData;
     var dayWiseChartArray=[];
 
-        var dayWiseData= Array.from(d3.group(rawData, d => d.Departure_Date), ([key, value]) => ({key, value}));
+        var dayWiseData=groupby(rawData, 'Departure_Date');
         
-        $.each( dayWiseData, function( j, daykeyval ) {
+        for (var day in dayWiseData) {
             var chartBar={};
-            var dayArr= daykeyval['value'];// All data of Mkt_19
-            var dayName= daykeyval['key'];//Mkt_19
+            var dayArr= dayWiseData[day];// All data of Mkt_19
+            var dayName= day;//Mkt_19
             
             //Remove row from market arr when filter applied
             dayArr=filterMonth(dayArr);
@@ -182,9 +186,9 @@ function prepareDayWiseData(rawData){
             chartBar['PROJ_LF']=projLf;
             
             dayWiseChartArray.push(chartBar);
-        });
+        };
        
-       updataTop();
+    updataTop();
     return dayWiseChartArray;
 }
 
@@ -194,7 +198,7 @@ function updataTop(){
         window.grandyoy=window.tYOYasmsum/window.tLYasmsum;
      window.tlylf=window.tLYasmsum/window.tLYrpmsum;
     window.grandprolf=window.lyFlownlf-window.tlylf+window.grandlf;
-
+console.log(window.tlylf);
     $('#toplf').text(parseInt(window.grandlf*100)+'%');
     if(!isNaN(window.grandprolf)) $('#toppro').text(parseInt(window.grandprolf*100)+'%');
     else $('#toppro').text('75%');
